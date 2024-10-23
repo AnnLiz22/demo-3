@@ -17,7 +17,7 @@ public class DemoApplication {
 		System.out.println("hello there");
 
 		User user = context.getBean(User.class);
-		user.setId(7);
+		user.setId(7L);
 		user.setName("Hanna");
 		user.setRole("mama");
 
