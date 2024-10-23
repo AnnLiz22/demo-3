@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @ToString
 public class User {
 
-  private Integer id;
+  private Long id;
   private String name;
   private String role;
 
