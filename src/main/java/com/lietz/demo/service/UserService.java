@@ -3,10 +3,9 @@ package com.lietz.demo.service;
 import com.lietz.demo.model.User;
 import com.lietz.demo.repo.UserRepo;
 import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,13 +19,13 @@ public class UserService {
     return user;
   }
 
-  public User getUserById(Long id){
+  public Optional<User> getUserById(Long id){
     return repo.getById(id);
   }
 
-  public int editUser(User user){
-    System.out.println(user + " updated");
-    return repo.updateUser(user);
+  public Optional<User> updateUser(Long id){
+  //  System.out.println(user + " updated");
+    return repo.updateUser(id);
   }
 
   public List<User> findAll(){
