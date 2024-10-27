@@ -54,7 +54,6 @@ public class UserRepo {
       }
       return null;
     };
-
       return Optional.ofNullable(template.queryForObject(query, new Object[] {id}, mapper));
     }
 
@@ -75,12 +74,25 @@ public class UserRepo {
 
   public void removeByName(String userName) {
     String query = "DELETE from users where name = ?";
+    int rowsAffected = template.update(query, userName);
+
+    if (rowsAffected > 0) {
+      System.out.println("User with name " + userName + " was successfully deleted.");
+    } else {
+      System.out.println("No user found with name " + userName);
+    }
 
   }
 
   public void removeById(Long id) {
     String query = "DELETE from users where id = ?";
+    int rowsAffected = template.update(query, id);
 
+    if (rowsAffected > 0) {
+      System.out.println("User with id " + id + " was successfully deleted.");
+    } else {
+      System.out.println("No user found with id " + id);
+    }
   }
 }
 
