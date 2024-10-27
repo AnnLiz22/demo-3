@@ -26,7 +26,7 @@ public class DemoApplication {
 
 
 		System.out.println(service.findAll());
-		service.editUser(user);
+		service.updateUser(user.getId());
 		service.deleteUserByName(user.getName());
 	}
 
