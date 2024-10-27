@@ -2,9 +2,11 @@ package com.lietz.demo.repo;
 
 import com.lietz.demo.model.User;
 import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -22,7 +24,7 @@ public class UserRepo {
     System.out.println(rows + " effectuated");
   }
 
-  public User getById(Long id) {
+  public Optional<User> getById(Long id) {
     String query = "SELECT * from users where id = ?";
 
     RowMapper<User> mapper = (rs, rowNum) -> {
@@ -32,13 +34,29 @@ public class UserRepo {
       user.setRole(rs.getString("role"));
       return user;
     };
-    return template.queryForObject(query, new Object[] {id}, mapper);
+    try {
+      return Optional.ofNullable(template.queryForObject(query, new Object[] {id}, mapper));
+    } catch (EmptyResultDataAccessException e) {
+      return Optional.empty();
+    }
   }
-
-  public int updateUser(User user) {
+  public Optional<User> updateUser(Long id) {
     String query = "UPDATE users SET name = ?, role = ? WHERE id = ?";
-    return template.update(query, user.getName(), user.getRole(), user.getId());
-  }
+    RowMapper<User> mapper = (rs, rowNum) -> {
+      Optional<User> user = getById(id);
+      if (user.isPresent()) {
+
+        User user1 = new User();
+        user1.setId(rs.getLong("id"));
+        user1.setName(rs.getString("name"));
+        user1.setRole(rs.getString("role"));
+        return user1;
+      }
+      return null;
+    };
+
+      return Optional.ofNullable(template.queryForObject(query, new Object[] {id}, mapper));
+    }
 
   public List<User> findAll() {
     String query = "SELECT * from users";
