@@ -41,22 +41,21 @@ public class UserRepo {
       return Optional.empty();
     }
   }
-  public Optional<User> updateUser(Long id) {
+  public Optional<User> updateUser(Long id, String newName, String newRole) {
     String query = "UPDATE users SET name = ?, role = ? WHERE id = ?";
-    RowMapper<User> mapper = (rs, rowNum) -> {
-      Optional<User> user = getById(id);
-      if (user.isPresent()) {
+    int rowsAffected = template.update(query, newName, newRole, id);
 
-        User user1 = new User();
-        user1.setId(rs.getLong("id"));
-        user1.setName(rs.getString("name"));
-        user1.setRole(rs.getString("role"));
-        return user1;
-      }
-      return null;
-    };
-      return Optional.ofNullable(template.queryForObject(query, new Object[] {id}, mapper));
+    Optional<User> user = getById(id);
+    if (user.isEmpty()) {
+      return Optional.empty();
     }
+
+    if (rowsAffected > 0) {
+      return getById(id);
+    } else {
+      return Optional.empty();
+    }
+  }
 
   public List<User> findAll() {
     String query = "SELECT * from users";
