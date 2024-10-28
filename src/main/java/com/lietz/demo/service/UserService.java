@@ -32,8 +32,14 @@ public class UserService {
     return repo.findAll();
   }
 
-  public void deleteUserByName(String userN){
+  public void deleteUserByName(String userName){
+    repo.removeByName(userName);
+    System.out.println("User with name " + userName + " deleted");
+  }
 
-    System.out.println(userN + " deleted");
+  public void deleteUserById(Long id){
+    repo.removeById(id);
+    System.out.println("User with id " + id + " deleted");
+
   }
 }
