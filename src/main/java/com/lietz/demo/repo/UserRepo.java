@@ -18,10 +18,11 @@ import org.springframework.stereotype.Repository;
 public class UserRepo {
   private final JdbcTemplate template;
 
-  public void save(User user) {
+  public User save(User user) {
     String query = "INSERT INTO users (id, name, role) VALUES (?,?,?)";
     int rows = template.update(query, user.getId(), user.getName(), user.getRole());
     System.out.println(rows + " effectuated");
+    return user;
   }
 
   public Optional<User> getById(Long id) {
