@@ -23,9 +23,9 @@ public class UserService {
     return repo.getById(id);
   }
 
-  public Optional<User> updateUser(Long id){
+  public Optional<User> updateUser(Long id, String name, String role){
   //  System.out.println(user + " updated");
-    return repo.updateUser(id);
+    return repo.updateUser(id, name, role);
   }
 
   public List<User> findAll(){

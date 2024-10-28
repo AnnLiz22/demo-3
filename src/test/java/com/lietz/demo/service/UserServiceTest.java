@@ -62,14 +62,14 @@ class UserServiceTest {
     User updatedUser = new User(1L, "Ania", "same");
 
     when(userRepo.getById(1L)).thenReturn(Optional.of(user));
-    when(userRepo.updateUser(updatedUser.getId())).thenReturn(Optional.of(updatedUser));
+    when(userRepo.updateUser(user.getId(), user.getName(), user.getRole())).thenReturn(Optional.of(updatedUser));
 
-    Optional<User> result = userService.updateUser(updatedUser.getId());
+    Optional<User> result = userService.updateUser(user.getId(), user.getName(), user.getRole());
 
     assertTrue(result.isPresent());
     assertEquals("Ania", result.get().getName());
     assertEquals("same", result.get().getRole());
-    verify(userRepo).updateUser(user.getId());
+    verify(userRepo).updateUser(user.getId(), user.getName(), user.getRole());
   }
 
   @Test
@@ -77,10 +77,10 @@ class UserServiceTest {
 
     when(userRepo.getById(10L)).thenReturn(null);
 
-    Optional<User> user = userService.updateUser(10L);
+    Optional<User> user = userService.updateUser(10L, "Piotr", "role");
 
     assertEquals(Optional.empty(), user);
-    verify(userRepo, times(1)).updateUser(10L);
+    verify(userRepo, times(1)).updateUser(10L, "Piotr", "role");
 
   }
 

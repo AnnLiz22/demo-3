@@ -33,7 +33,7 @@ public class UserController {
 
     if (existingUser.isPresent()) {
       user.setId(id);
-      Optional<User> updatedUser = userService.updateUser(id);
+      Optional<User> updatedUser = userService.updateUser(id, user.getName(), user.getRole());
       return ResponseEntity.ok(updatedUser);
     } else {
       return ResponseEntity.notFound().build();
