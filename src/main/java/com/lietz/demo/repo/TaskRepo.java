@@ -1,7 +1,6 @@
 package com.lietz.demo.repo;
 
 import com.lietz.demo.model.Task;
-import com.lietz.demo.model.User;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
