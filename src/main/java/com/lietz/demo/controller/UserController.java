@@ -2,8 +2,10 @@ package com.lietz.demo.controller;
 
 import com.lietz.demo.model.User;
 import com.lietz.demo.service.UserService;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +29,12 @@ public class UserController {
     }
   }
 
+  @RequestMapping(value = "/add", method = RequestMethod.POST)
+  public User addUser(@RequestBody User user){
+   User addedUser = userService.addUser(user);
+   return addedUser;
+  }
+
   @RequestMapping(value = "/edit-user/{id}", method = RequestMethod.PUT)
   public ResponseEntity<Optional<User>> updateUser(@PathVariable Long id, @RequestBody User user) {
     Optional <User> existingUser = userService.getUserById(id);
@@ -41,8 +49,24 @@ public class UserController {
   }
 
   @RequestMapping(value = "", method = RequestMethod.GET)
-  public String getAllUsers(){
-    return "Here are all users!";
+  public ResponseEntity<List<User>> getAllUsers(){
+    List<User> users = userService.findAll();
+    if(users.isEmpty()){
+      return ResponseEntity.noContent().build();
+    }else{
+      return ResponseEntity.ok(users);
+    }
   }
 
+
+  @RequestMapping(value = "/remove/{id}", method = RequestMethod.DELETE)
+  public ResponseEntity <User> deleteUser(@PathVariable Long id){
+    Optional<User> optionalUser = userService.getUserById(id);
+    if(optionalUser.isPresent()){
+      userService.deleteUserById(id);
+      return ResponseEntity.noContent().build();
+    }else {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+  }
 }
