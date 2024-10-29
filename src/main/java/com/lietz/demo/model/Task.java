@@ -2,7 +2,7 @@ package com.lietz.demo.model;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import java.util.List;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,19 +17,26 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
 @AllArgsConstructor
-public class User {
+@NoArgsConstructor
+public class Task {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String name;
-  private String role;
-  private List<Task> tasks;
+  private String description;
+  private LocalDate createdOn;
 
-  public User(Long id, String name, String role) {
-    this.id = id;
+
+  public Task(String name, String description, LocalDate createdOn) {
     this.name = name;
-    this.role = role;
+    this.description = description;
+    this.createdOn = createdOn;
+  }
+
+  public Task(String name, String description) {
+    this.name = name;
+    this.description = description;
   }
 }
