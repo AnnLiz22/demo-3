@@ -28,7 +28,7 @@ public class TaskService {
   }
 
   public Optional<Task> updateTask(Long id, Task task){
-    return taskRepo.updateTask(id, task.getName(), task.getDescription(), task.getCreatedOn());
+    return taskRepo.updateTask(id, task.getName(), task.getDescription(), task.getCreatedOn(), task.getUserId());
   }
 
   public List<Task> findAllTasks(){
