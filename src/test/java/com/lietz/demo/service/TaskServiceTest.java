@@ -28,9 +28,9 @@ class TaskServiceTest {
   @BeforeEach
   void setUp() {
     tasks = List.of(
-        new Task(1L,"my task no 1", "to do asap", LocalDate.of(2024, 10,24)),
-        new Task(2L,"my task no 2", "to do", LocalDate.of(2024, 11,12)),
-        new Task(3L,"my task no 3", "extra task", LocalDate.of(2024, 12,16))
+        new Task(1L,"my task no 1", "to do asap", LocalDate.of(2024, 10,24), 1L),
+        new Task(2L,"my task no 2", "to do", LocalDate.of(2024, 11,12), 1L),
+        new Task(3L,"my task no 3", "extra task", LocalDate.of(2024, 12,16), 1L)
     );
   }
 
@@ -64,15 +64,15 @@ class TaskServiceTest {
   @Test
   void shouldUpdateTaskIfTaskExists() {
     Task task = tasks.get(1);
-    Task newTask = new Task(2L,"new task", "asap", LocalDate.of(2024, 11, 1));
+    Task newTask = new Task(2L,"new task", "asap", LocalDate.of(2024, 11, 1), 1L);
 
-    when(taskRepo.updateTask(task.getId(), task.getName(), task.getDescription(),task.getCreatedOn())).thenReturn(Optional.of(newTask));
+    when(taskRepo.updateTask(task.getId(), task.getName(), task.getDescription(),task.getCreatedOn(), task.getUserId())).thenReturn(Optional.of(newTask));
 
    Optional<Task> task1 =  taskService.updateTask(task.getId(), task);
 
    assertTrue(task1.isPresent());
    assertEquals("asap", task1.get().getDescription());
-   verify(taskRepo, times(1)).updateTask(task.getId(), task.getName(), task.getDescription(), task.getCreatedOn());
+   verify(taskRepo, times(1)).updateTask(task.getId(), task.getName(), task.getDescription(), task.getCreatedOn(), task.getUserId());
 
   }
 

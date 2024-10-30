@@ -1,5 +1,6 @@
 package com.lietz.demo.repo;
 
+import com.lietz.demo.model.Task;
 import com.lietz.demo.model.User;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class UserRepo {
   private final JdbcTemplate template;
+  private final TaskRepo taskRepo;
 
   public User save(User user) {
     String query = "INSERT INTO users (id, name, role) VALUES (?,?,?)";
@@ -93,6 +95,23 @@ public class UserRepo {
     } else {
       System.out.println("No user found with id " + id);
     }
+  }
+
+
+  public Optional<User> assignTaskToUser(Long userId, Long taskId){
+    Optional<User> user = getById(userId);
+    Optional<Task> task = taskRepo.getById(taskId);
+
+    if(task.isPresent()){
+      task.get().setUserId(userId);
+      taskRepo.updateTask(task.get().getId(), task.get().getName(), task.get().getDescription(), task.get().getCreatedOn(), task.get().getUserId());
+    }
+
+    if(user.isPresent()) {
+      user.get().setTasks(taskRepo.getTasksByUserId(userId));
+    }
+
+    return user;
   }
 }
 

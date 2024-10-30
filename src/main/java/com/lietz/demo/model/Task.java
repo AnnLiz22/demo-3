@@ -27,7 +27,7 @@ public class Task {
   private String name;
   private String description;
   private LocalDate createdOn;
-
+  private Long userId;
 
   public Task(String name, String description, LocalDate createdOn) {
     this.name = name;
