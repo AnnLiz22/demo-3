@@ -69,4 +69,10 @@ public class UserController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
   }
+
+  @RequestMapping(value = "/{userId}/assign-task/{taskId}", method = RequestMethod.PUT)
+  public ResponseEntity<Optional<User>> assignTaskToUser(@PathVariable Long userId, @PathVariable Long taskId) {
+    Optional<User> updatedUser = userService.assignTaskToUser(userId, taskId);
+    return ResponseEntity.ok(updatedUser);
+  }
 }
