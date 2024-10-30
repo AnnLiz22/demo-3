@@ -42,4 +42,10 @@ public class UserService {
     System.out.println("User with id " + id + " deleted");
 
   }
+
+  public Optional<User> assignTaskToUser(Long userId, Long taskId) {
+    Optional<User> user = getUserById(userId);
+    repo.assignTaskToUser(userId, taskId);
+    return user;
+  }
 }
