@@ -42,7 +42,7 @@ public class TaskRepo {
   }
 
 
-  public Optional<Task> updateTask(Long id, String newName, String newDescription, LocalDate newCreatedOn) {
+  public Optional<Task> updateTask(Long id, String newName, String newDescription, LocalDate newCreatedOn, Long userId) {
     String query = "UPDATE tasks SET name = ?, description = ?, createdOn = ? WHERE id = ?";
     int rowsAffected = template.update(query, newName, newDescription, newCreatedOn, id);
 
@@ -85,4 +85,16 @@ public class TaskRepo {
     }
   }
 
+  public List<Task> getTasksByUserId(Long userId) {
+    String sql = "SELECT * FROM tasks WHERE user_id = ?";
+    return template.query(sql, new Object[]{userId}, (rs, rowNum) -> {
+      Task task = new Task();
+      task.setId(rs.getLong("id"));
+      task.setName(rs.getString("name"));
+      task.setDescription(rs.getString("description"));
+      task.setCreatedOn(rs.getDate("createdOn").toLocalDate());
+      task.setUserId(rs.getLong("user_id"));
+      return task;
+    });
+  }
 }
