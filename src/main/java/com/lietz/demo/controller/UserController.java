@@ -33,16 +33,15 @@ public class UserController {
   }
 
   @RequestMapping(value = "/edit-user/{id}", method = RequestMethod.PUT)
-  public ResponseEntity<Optional<User>> updateUser(@PathVariable Long id, @RequestBody User user) {
+  public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
     Optional<User> existingUser = userService.getUserById(id);
 
-    if (existingUser.isPresent()) {
-      user.setId(id);
-      Optional<User> updatedUser = userService.updateUser(id, user.getName(), user.getRole(), user.getTasks());
-      return ResponseEntity.ok(updatedUser);
-    } else {
+    if (existingUser.isEmpty()) {
       return ResponseEntity.notFound().build();
     }
+      user.setId(id);
+      User updatedUser = userService.updateUser(id, user.getName(), user.getRole(), user.getTasks()).orElse(null);
+      return ResponseEntity.ok(updatedUser);
   }
 
   @RequestMapping(value = "", method = RequestMethod.GET)
