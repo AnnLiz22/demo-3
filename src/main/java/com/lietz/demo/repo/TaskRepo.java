@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,11 +17,12 @@ import org.springframework.stereotype.Repository;
 public class TaskRepo {
 
   private final JdbcTemplate template;
+  private static final Logger logger = LoggerFactory.getLogger(TaskRepo.class);
 
   public Task save(Task task) {
-    String query = "INSERT INTO tasks (id, name, role, createdOn, user_id) VALUES (?,?,?, ?, ?)";
+    String query = "INSERT INTO tasks (id, name, role, createdOn, user_id) VALUES (?, ?, ?, ?, ?)";
     int rows = template.update(query, task.getId(), task.getName(), task.getDescription(), task.getCreatedOn());
-    System.out.println(rows + " effectuated");
+    logger.info(rows + " effectuated");
     return task;
   }
 
@@ -33,11 +36,13 @@ public class TaskRepo {
       task.setDescription(rs.getString("description"));
       task.setCreatedOn(rs.getDate("createdOn").toLocalDate());
       task.setUserId(rs.getLong("user_id"));
+      logger.info("Selected task with id " + id);
       return task;
     };
     try {
       return Optional.ofNullable(template.queryForObject(query, new Object[] {id}, mapper));
     } catch (EmptyResultDataAccessException e) {
+      logger.info("task with id " + id + " not found");
       return Optional.empty();
     }
   }
@@ -49,6 +54,7 @@ public class TaskRepo {
 
     Optional<Task> task = getById(id);
     if (task.isEmpty()) {
+      logger.info("Task not found.");
       return Optional.empty();
     }
 
@@ -73,6 +79,7 @@ public class TaskRepo {
 
       return task;
     };
+    logger.info("get all tasks");
     return template.query(query, mapper);
   }
 
@@ -81,9 +88,9 @@ public class TaskRepo {
     int rowsAffected = template.update(query, id);
 
     if (rowsAffected > 0) {
-      System.out.println("Task with id " + id + " was successfully deleted.");
+      logger.info("Task with id " + id + " was successfully deleted.");
     } else {
-      System.out.println("No task found with id " + id);
+      logger.info("No task found with id " + id);
     }
   }
 
@@ -96,6 +103,8 @@ public class TaskRepo {
       task.setDescription(rs.getString("description"));
       task.setCreatedOn(rs.getDate("createdOn").toLocalDate());
       task.setUserId(rs.getLong("user_id"));
+
+      logger.info("Get all tasks from user " + userId);
       return task;
     });
   }
