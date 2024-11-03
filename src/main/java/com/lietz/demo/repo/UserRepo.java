@@ -33,7 +33,7 @@ public class UserRepo {
   public User save(User user) {
     String query = "INSERT INTO users (id, name, role) VALUES (?,?,?)";
     int rows = template.update(query, user.getId(), user.getName(), user.getRole());
-    logger.info(rows + "effectuated");
+    logger.info(rows + " effectuated");
     return user;
   }
 
@@ -155,7 +155,7 @@ public class UserRepo {
           user.getTasks().add(task);
         }
       }
-      logger.info("get all users with tasks " );
+      logger.info("getting all users with tasks " );
       return new ArrayList<>(userMap.values());
     });
   }
