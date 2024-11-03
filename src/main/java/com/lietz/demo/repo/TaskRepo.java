@@ -17,7 +17,7 @@ public class TaskRepo {
   private final JdbcTemplate template;
 
   public Task save(Task task) {
-    String query = "INSERT INTO tasks (id, name, role) VALUES (?,?,?)";
+    String query = "INSERT INTO tasks (id, name, role, createdOn, user_id) VALUES (?,?,?, ?, ?)";
     int rows = template.update(query, task.getId(), task.getName(), task.getDescription(), task.getCreatedOn());
     System.out.println(rows + " effectuated");
     return task;
@@ -32,7 +32,7 @@ public class TaskRepo {
       task.setName(rs.getString("name"));
       task.setDescription(rs.getString("description"));
       task.setCreatedOn(rs.getDate("createdOn").toLocalDate());
-      task.setUserId(rs.getLong("userId"));
+      task.setUserId(rs.getLong("user_id"));
       return task;
     };
     try {
@@ -44,7 +44,7 @@ public class TaskRepo {
 
 
   public Optional<Task> updateTask(Long id, String newName, String newDescription, LocalDate newCreatedOn, Long userId) {
-    String query = "UPDATE tasks SET name = ?, description = ?, createdOn = ?, userId = ? WHERE id = ?";
+    String query = "UPDATE tasks SET name = ?, description = ?, createdOn = ?, user_id = ? WHERE id = ?";
     int rowsAffected = template.update(query, newName, newDescription, newCreatedOn, userId, id);
 
     Optional<Task> task = getById(id);
@@ -69,7 +69,7 @@ public class TaskRepo {
       task.setName(rs.getString("name"));
       task.setDescription(rs.getString("description"));
       task.setCreatedOn(rs.getDate("createdOn").toLocalDate());
-      task.setUserId(rs.getLong("userId"));
+      task.setUserId(rs.getLong("user_id"));
 
       return task;
     };
@@ -88,14 +88,14 @@ public class TaskRepo {
   }
 
   public List<Task> getTasksByUserId(Long userId) {
-    String sql = "SELECT * FROM tasks WHERE userId = ?";
+    String sql = "SELECT * FROM tasks WHERE user_id = ?";
     return template.query(sql, new Object[]{userId}, (rs, rowNum) -> {
       Task task = new Task();
       task.setId(rs.getLong("id"));
       task.setName(rs.getString("name"));
       task.setDescription(rs.getString("description"));
       task.setCreatedOn(rs.getDate("createdOn").toLocalDate());
-      task.setUserId(rs.getLong("userId"));
+      task.setUserId(rs.getLong("user_id"));
       return task;
     });
   }
