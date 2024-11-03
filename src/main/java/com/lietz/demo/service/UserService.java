@@ -1,5 +1,6 @@
 package com.lietz.demo.service;
 
+import com.lietz.demo.model.Task;
 import com.lietz.demo.model.User;
 import com.lietz.demo.repo.UserRepo;
 import java.util.List;
@@ -23,8 +24,7 @@ public class UserService {
     return repo.getById(id);
   }
 
-  public Optional<User> updateUser(Long id, String name, String role){
-  //  System.out.println(user + " updated");
+  public Optional<User> updateUser(Long id, String name, String role, List<Task> tasks){
     return repo.updateUser(id, name, role);
   }
 
@@ -34,13 +34,10 @@ public class UserService {
 
   public void deleteUserByName(String userName){
     repo.removeByName(userName);
-    System.out.println("User with name " + userName + " deleted");
   }
 
   public void deleteUserById(Long id){
     repo.removeById(id);
-    System.out.println("User with id " + id + " deleted");
-
   }
 
   public Optional<User> assignTaskToUser(Long userId, Long taskId) {
