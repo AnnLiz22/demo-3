@@ -10,6 +10,6 @@ id int primary key,
 name varchar (50),
 description varchar(255),
 createdOn date,
-userId int
+user_id int
 );
 
