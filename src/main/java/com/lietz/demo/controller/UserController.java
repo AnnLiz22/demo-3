@@ -20,28 +20,25 @@ public class UserController {
   private final UserService userService;
 
   @RequestMapping(value = "/get-user/{id}", method = RequestMethod.GET)
-  public ResponseEntity<Optional<User>> getUserById(@PathVariable Long id) {
-    Optional<User> user = userService.getUserById(id);
-    if (user.isPresent()) {
-      return ResponseEntity.ok(user);
-    } else {
-      return ResponseEntity.notFound().build();
-    }
+  public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    return userService.getUserById(id)
+        .map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
   @RequestMapping(value = "/add", method = RequestMethod.POST)
-  public User addUser(@RequestBody User user){
-   User addedUser = userService.addUser(user);
-   return addedUser;
+  public User addUser(@RequestBody User user) {
+    User addedUser = userService.addUser(user);
+    return addedUser;
   }
 
   @RequestMapping(value = "/edit-user/{id}", method = RequestMethod.PUT)
   public ResponseEntity<Optional<User>> updateUser(@PathVariable Long id, @RequestBody User user) {
-    Optional <User> existingUser = userService.getUserById(id);
+    Optional<User> existingUser = userService.getUserById(id);
 
     if (existingUser.isPresent()) {
       user.setId(id);
-      Optional<User> updatedUser = userService.updateUser(id, user.getName(), user.getRole());
+      Optional<User> updatedUser = userService.updateUser(id, user.getName(), user.getRole(), user.getTasks());
       return ResponseEntity.ok(updatedUser);
     } else {
       return ResponseEntity.notFound().build();
@@ -49,30 +46,41 @@ public class UserController {
   }
 
   @RequestMapping(value = "", method = RequestMethod.GET)
-  public ResponseEntity<List<User>> getAllUsers(){
+  public ResponseEntity<List<User>> getAllUsers() {
     List<User> users = userService.findAll();
-    if(users.isEmpty()){
+    if (users.isEmpty()) {
       return ResponseEntity.noContent().build();
-    }else{
+    } else {
       return ResponseEntity.ok(users);
     }
   }
 
-
   @RequestMapping(value = "/remove/{id}", method = RequestMethod.DELETE)
-  public ResponseEntity <User> deleteUser(@PathVariable Long id){
+  public ResponseEntity<User> deleteUser(@PathVariable Long id) {
     Optional<User> optionalUser = userService.getUserById(id);
-    if(optionalUser.isPresent()){
+    if (optionalUser.isPresent()) {
       userService.deleteUserById(id);
       return ResponseEntity.noContent().build();
-    }else {
+    } else {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+  }
+
+  @RequestMapping(value = "/remove/{name}", method = RequestMethod.DELETE)
+  public ResponseEntity<User> deleteUserByName(@PathVariable String name) {
+    userService.deleteUserByName(name);
+    return ResponseEntity.noContent().build();
   }
 
   @RequestMapping(value = "/{userId}/assign-task/{taskId}", method = RequestMethod.PUT)
   public ResponseEntity<Optional<User>> assignTaskToUser(@PathVariable Long userId, @PathVariable Long taskId) {
     Optional<User> updatedUser = userService.assignTaskToUser(userId, taskId);
     return ResponseEntity.ok(updatedUser);
+  }
+
+  @RequestMapping(value = "/users-with-tasks", method = RequestMethod.GET)
+  public ResponseEntity<List<User>> getUsersWithTasks() {
+    List<User> users = userService.findAllUsersWithTasks();
+    return ResponseEntity.ok(users);
   }
 }
