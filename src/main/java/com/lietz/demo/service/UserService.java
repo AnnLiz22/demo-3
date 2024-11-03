@@ -45,4 +45,8 @@ public class UserService {
     repo.assignTaskToUser(userId, taskId);
     return user;
   }
+
+  public List<User> findAllUsersWithTasks() {
+    return repo.findAllUsersWithTasks();
+  }
 }
