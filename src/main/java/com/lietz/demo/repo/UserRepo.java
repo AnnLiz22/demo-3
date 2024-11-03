@@ -11,6 +11,8 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,11 +28,12 @@ public class UserRepo {
   private JdbcTemplate template;
   @Autowired
   private TaskRepo taskRepo;
+  private static final Logger logger = LoggerFactory.getLogger(UserRepo.class);
 
   public User save(User user) {
     String query = "INSERT INTO users (id, name, role) VALUES (?,?,?)";
     int rows = template.update(query, user.getId(), user.getName(), user.getRole());
-    System.out.println(rows + " effectuated");
+    logger.info(rows + "effectuated");
     return user;
   }
 
@@ -42,11 +45,14 @@ public class UserRepo {
       user.setId(rs.getLong("id"));
       user.setName(rs.getString("name"));
       user.setRole(rs.getString("role"));
+
+      logger.info("getting user with id " + id);
       return user;
     };
     try {
       return Optional.ofNullable(template.queryForObject(query, mapper, id));
     } catch (EmptyResultDataAccessException e) {
+      logger.info("user with given id not found");
       return Optional.empty();
     }
   }
@@ -82,11 +88,10 @@ public class UserRepo {
     int rowsAffected = template.update(query, userName);
 
     if (rowsAffected > 0) {
-      System.out.println("User with name " + userName + " was successfully deleted.");
+      logger.info("User with name " + userName + " was successfully deleted.");
     } else {
-      System.out.println("No user found with name " + userName);
+      logger.info("No user found with name " + userName);
     }
-
   }
 
   public void removeById(Long id) {
@@ -94,9 +99,9 @@ public class UserRepo {
     int rowsAffected = template.update(query, id);
 
     if (rowsAffected > 0) {
-      System.out.println("User with id " + id + " was successfully deleted.");
+      logger.info("User with id " + id + " was successfully deleted.");
     } else {
-      System.out.println("No user found with id " + id);
+      logger.info("No user found with id " + id);
     }
   }
 
@@ -113,6 +118,7 @@ public class UserRepo {
       taskRepo.updateTask(task.getId(), task.getName(), task.getDescription(), task.getCreatedOn(), task.getUserId());
 
       user.setTasks(taskRepo.getTasksByUserId(userId));
+      logger.info("task "+ taskId + " successfully assigned to user " + userId);
     }
 
   }
@@ -149,10 +155,9 @@ public class UserRepo {
           user.getTasks().add(task);
         }
       }
+      logger.info("get all users with tasks " );
       return new ArrayList<>(userMap.values());
     });
   }
-
-
 }
 
