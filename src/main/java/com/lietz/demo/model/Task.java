@@ -29,10 +29,11 @@ public class Task {
   private LocalDate createdOn;
   private Long userId;
 
-  public Task(String name, String description, LocalDate createdOn) {
+  public Task(String name, String description, LocalDate createdOn, Long userId) {
     this.name = name;
     this.description = description;
     this.createdOn = createdOn;
+    this.userId = userId;
   }
 
   public Task(String name, String description) {
