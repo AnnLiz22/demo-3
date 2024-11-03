@@ -5,8 +5,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.lietz.demo.model.Task;
 import com.lietz.demo.model.User;
 import com.lietz.demo.repo.UserRepo;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,7 +66,7 @@ class UserServiceTest {
     when(userRepo.getById(1L)).thenReturn(Optional.of(user));
     when(userRepo.updateUser(user.getId(), user.getName(), user.getRole())).thenReturn(Optional.of(updatedUser));
 
-    Optional<User> result = userService.updateUser(user.getId(), user.getName(), user.getRole());
+    Optional<User> result = userService.updateUser(user.getId(), user.getName(), user.getRole(), user.getTasks());
 
     assertTrue(result.isPresent());
     assertEquals("Ania", result.get().getName());
@@ -75,9 +77,10 @@ class UserServiceTest {
   @Test
   void shouldReturnEmptyOptionalWhenUserDoesNotExist() {
 
+    List <Task> userTasks = new ArrayList<>();
     when(userRepo.getById(10L)).thenReturn(null);
 
-    Optional<User> user = userService.updateUser(10L, "Piotr", "role");
+    Optional<User> user = userService.updateUser(10L, "Piotr", "role", userTasks);
 
     assertEquals(Optional.empty(), user);
     verify(userRepo, times(1)).updateUser(10L, "Piotr", "role");

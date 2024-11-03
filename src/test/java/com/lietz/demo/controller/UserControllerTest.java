@@ -35,7 +35,7 @@ class UserControllerTest {
     User updatedUser = new User(1L, "Ania", "my new role");
 
     when(userService.getUserById(1L)).thenReturn(Optional.of(user));
-    when(userService.updateUser(1L, user.getName(), user.getRole())).thenReturn(Optional.of(updatedUser));
+    when(userService.updateUser(1L, user.getName(), user.getRole(), user.getTasks())).thenReturn(Optional.of(updatedUser));
 
     mockMvc.perform(put("/api/users/edit-user/1")
             .contentType(MediaType.APPLICATION_JSON)
