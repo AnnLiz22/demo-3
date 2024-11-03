@@ -27,7 +27,7 @@ class TaskControllerTest {
   @Test
   void shouldFindTaskById() throws Exception {
 
-    Task task = new Task(1L, "task", "to do", LocalDate.of(2024,12,12));
+    Task task = new Task(1L, "task", "to do", LocalDate.of(2024,12,12), 1l);
 
     when(taskService.getById(1L)).thenReturn(Optional.of(task));
 
